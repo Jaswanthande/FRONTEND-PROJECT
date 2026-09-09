@@ -1,6 +1,7 @@
 import React from 'react'
 import {useState} from 'react'
 import Home from './Home'
+import axios from 'axios'
 
 function Addnewdoctor() {
   let [name, setName] = useState("")
@@ -11,10 +12,31 @@ function Addnewdoctor() {
   let [image, setImage] = useState("")
   let [newdoctor, setNewdoctor] = useState(null)
 
-  function handleSubmit(e){
+  async function handleSubmit(e){
     e.preventDefault()
     let formdetails = {id:Date.now(),name, age, gender, specialization, salary,image}
+    await axios.post("https://doctorapibackend.onrender.com/doctors",formdetails)
+    alert("Doctor added successfully")
     setNewdoctor(formdetails)
+  }
+
+  async function deletedata(id){
+    await axios.delete(`https://doctorapibackend.onrender.com/doctors/${id}`)
+    alert("Doctor deleted successfully")
+    setNewdoctor(id)
+  }
+
+  async function updatedata(id){
+    let upadated={
+      name:'jaswanth',
+      age:21,
+      gender:'male',
+      specialization:'heart',
+      salary:10000,
+    }
+    await axios.put(`https://doctorapibackend.onrender.com/doctors/${id}`,upadated)
+    alert("Doctor updated successfully")
+    setNewdoctor(upadated)
   }
 
   return (
@@ -38,7 +60,7 @@ function Addnewdoctor() {
 
             <button type="submit">Add Doctor</button>
         </form>
-      <Home newdoctor={newdoctor}/>
+      <Home updatedata={updatedata} deletedata={deletedata} newdoctor={newdoctor}/>
     </div>
 
   )

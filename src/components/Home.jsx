@@ -1,50 +1,25 @@
 import React from 'react'
 import {useState,useEffect} from 'react'
 import Doctorcard from './Doctorcard';
+import axios from 'axios';
 
-function Home({newdoctor}) {
+function Home({newdoctor,deletedata,updatedata}) {
     let [doctors, setDoctors] = useState([])
     let [search, setSearch] = useState("")
     let [specialization, setSpecialization] = useState("")
 
-    function getapidata(){
-        let data = [
-        {
-            id: 1,
-            name: "Jaswanth",
-            age: 21,
-            gender: "Male",
-            specialization: "Heart",
-            salary: 500000,
-            image: "https://i.pinimg.com/1200x/4a/74/9d/4a749dc05ac82ae7000e5ba6f2aa9831.jpg"
-        },
-
-        {
-            id: 2,
-            name: "Jahnavi",
-            age: 21,
-            gender: "Female",
-            specialization: "Bones",
-            salary: 500000,
-            image: "https://i.pinimg.com/736x/b2/38/ce/b238ce951caa669201646f9d87bc4d82.jpg"
-        },
-        {
-            id: 3,
-            name: "Yaswanth",
-            age: 21,
-            gender: "Male",
-            specialization: "Eye",
-            salary: 500000,
-            image: "https://i.pinimg.com/1200x/31/6b/eb/316beb3ee8cdb849f10b5d24b97a6645.jpg"
-        },
-        ];
-        setDoctors(data)
-    }
+        async function getapidata() {
+            let response = await axios.get("https://doctorapibackend.onrender.com/doctors")
+            console.log(response)
+            console.log(response.data)
+            setDoctors(response.data)
+        }
+    
 
 
     useEffect(()=>{
         getapidata()
-    },[])
+    },[newdoctor])
 
 
     useEffect(()=>{
@@ -72,13 +47,17 @@ function Home({newdoctor}) {
             <div className='doctorcontainer'>
                 {filteredDoctors.map((doctor) => {
                    return <Doctorcard 
+                   deletedata={deletedata}
+                   updatedata={updatedata}
                    name={doctor.name}
                    age={doctor.age}
                    gender={doctor.gender}
                    specialization={doctor.specialization}
                    salary={doctor.salary}
                    image={doctor.image}
-                   key={doctor.id}/>
+                   key={doctor.id}
+                   id={doctor.id}/>
+
             })}
             </div>):(<h1>Loading...</h1>)}
     </div>
